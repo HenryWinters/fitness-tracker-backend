@@ -3,6 +3,7 @@ const app = express()
 const cors = require('cors')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
+const workoutsRouter = require('./controllers/workouts')
 const mongoose = require('mongoose')
 const config = require('./utils/config')
 const middleware = require('./utils/middleware')
@@ -17,6 +18,7 @@ app.use(middleware.tokenExtractor)
 
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
+app.use('/api/workouts', workoutsRouter)
 
 app.listen(config.PORT, () => {
     console.log(`Server running on port ${config.PORT}`)
