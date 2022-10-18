@@ -4,8 +4,8 @@ const workoutSchema = new mongoose.Schema({
     workoutTitle: String, 
     workoutNote: String, 
     workout: Array,
-    likes: Array,
-    comments: Array,    
+    workoutTime: String,
+    likeCount: Number,    
     user: [
         {
             type: mongoose.Schema.Types.ObjectId, 

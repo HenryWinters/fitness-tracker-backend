@@ -11,7 +11,9 @@ workoutsRouter.post('/', middleware.userExtractor, async (request, response) => 
     const workout = new Workout({
         workoutTitle: body.workoutTitle, 
         workoutNote: body.workoutNote,
+        workoutTime: body.workoutTime,
         workout: body.workout,
+        likeCount: 0, 
         user: user._id
     })
 
@@ -20,5 +22,13 @@ workoutsRouter.post('/', middleware.userExtractor, async (request, response) => 
     await user.save()
     response.status(201).json(savedWorkout)
 })
+
+workoutsRouter.get('/:id', async (request, response) => {
+    const workouts = await Workout.find({ user: request.params.id })
+        .sort({ workoutTime: -1 })
+        .limit(10)
+    response.json(workouts)
+})
+
 
 module.exports = workoutsRouter
