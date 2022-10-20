@@ -27,6 +27,7 @@ workoutsRouter.get('/:id', async (request, response) => {
     const workouts = await Workout.find({ user: request.params.id })
         .sort({ workoutTime: -1 })
         .limit(10)
+        .populate('user')
     response.json(workouts)
 })
 

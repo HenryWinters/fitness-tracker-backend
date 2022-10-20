@@ -4,7 +4,12 @@ const userSchema = new mongoose.Schema({
     username: String, 
     name: String, 
     passwordHash: String,
-    friends: Array,  
+    friends: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ],  
     workouts: [
         {
             type: mongoose.Schema.Types.ObjectId, 
