@@ -3,10 +3,18 @@ const mongoose = require('mongoose')
 const userSchema = new mongoose.Schema({
     username: String, 
     name: String, 
+    city: String, 
+    bio: String, 
     passwordHash: String,
-    friends: [
+    followers: [
         {
             type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ],
+    following: [
+        {
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'User'
         }
     ],  
@@ -15,7 +23,11 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId, 
             ref: 'Workout'
         }
-    ]
+    ], 
+    workoutCount: Number, 
+    exerciseCount: Number,
+    setCount: Number, 
+    repCount: Number
 })
 
 userSchema.set('toJSON', {
