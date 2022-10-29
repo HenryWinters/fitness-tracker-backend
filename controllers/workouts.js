@@ -13,12 +13,20 @@ workoutsRouter.post('/', middleware.userExtractor, async (request, response) => 
         workoutNote: body.workoutNote,
         workoutTime: body.workoutTime,
         workout: body.workout,
+        totalSets: body.totalSets, 
+        totalReps: body.totalReps, 
+        totalExercises: body.totalExercises,
+        exerciseTitles: body.exerciseTitles, 
         likeCount: 0, 
         user: user._id
     })
 
     const savedWorkout = await workout.save()
     user.workouts = user.workouts.concat(savedWorkout._id)
+    user.workoutCount = user.workoutCount + 1
+    user.exerciseCount = user.exerciseCount + workout.totalExercises
+    user.setCount = user.setCount + workout.totalSets
+    user.repCount = user.repCount + workout.totalReps 
     await user.save()
     response.status(201).json(savedWorkout)
 })
@@ -29,6 +37,29 @@ workoutsRouter.get('/:id', async (request, response) => {
         .limit(10)
         .populate('user')
     response.json(workouts)
+})
+
+workoutsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
+    const user = request.user
+
+    const workoutToDelete = await Workout.findById(request.params.id)
+
+    if (user.id === workoutToDelete.user.toString()) {
+        await Workout.findByIdAndRemove(request.params.id)
+
+        const indexOfWorkout = user.workouts.indexOf(request.params.id)
+        if (indexOfWorkout > -1) {
+            user.workouts.splice(indexOfWorkout, 1)
+        }
+        user.workoutCount = user.workoutCount - 1
+        user.exerciseCount = user.exerciseCount - workoutToDelete.totalExercises
+        user.setCount = user.setCount - workoutToDelete.totalSets
+        user.repCount = user.repCount - workoutToDelete.totalReps
+
+        await user.save()
+
+        response.status(204).end()
+    }
 })
 
 

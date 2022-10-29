@@ -5,7 +5,9 @@ Content-Type: application/json
     "username": "hlwinters", 
     "name": "Henry Winters",
     "city": "San Francisco, CA",
-    "password": "password"
+    "password": "password",
+    "registerDate": "2022-10-29T06:09:20.851Z",
+    "color": "#FF715B"
 }
 
 ###

@@ -5,6 +5,10 @@ const workoutSchema = new mongoose.Schema({
     workoutNote: String, 
     workout: Array,
     workoutTime: String,
+    totalSets: Number, 
+    totalReps: Number, 
+    totalExercises: Number, 
+    exerciseTitles: Array, 
     likeCount: Number,    
     user: [
         {

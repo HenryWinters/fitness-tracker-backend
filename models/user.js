@@ -5,6 +5,8 @@ const userSchema = new mongoose.Schema({
     name: String, 
     city: String, 
     bio: String, 
+    color: String, 
+    registerDate: String, 
     passwordHash: String,
     followers: [
         {
