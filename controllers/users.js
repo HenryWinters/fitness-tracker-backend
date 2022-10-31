@@ -11,15 +11,22 @@ usersRouter.post('/', async (request, response) => {
             error: 'username must be unique'
         })
     }
-    if (!username || !password) {
+    if (!username || !password || !name ) {
         return response.status(400).json({
-            error: 'username and password are required'
+            error: 'username, password, and name are required'
         })
     }
 
-    if (username.length < 3 || password.length < 3) {
+    if (username.length < 3) {
         return response.status(400).json({
-            error: 'username and password must be at least 3 characters long'
+            error: 'username must be at least 3 characters long'
+        })
+    }
+
+    const passwordRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+    if (!passwordRegex.test(password)) {
+        return response.status(400).json({
+            error: 'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character (@, $, !, %, *, ?, &)'
         })
     }
 
