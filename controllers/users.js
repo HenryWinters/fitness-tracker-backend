@@ -8,7 +8,7 @@ usersRouter.post('/', async (request, response) => {
     const existingUser = await User.findOne({ username })
     if (existingUser) {
         return response.status(400).json({
-            error: 'username must be unique'
+            error: 'username already taken'
         })
     }
     if (!username || !password || !name ) {
@@ -55,6 +55,11 @@ usersRouter.post('/', async (request, response) => {
 usersRouter.get('/', async (request, reponse) => {
     const users = await User.find({})
     reponse.json(users)
+})
+
+usersRouter.get('/:id', async (request, response) => {
+    const user = await User.find({ _id: request.params.id })
+    response.json(user)
 })
 
 module.exports = usersRouter
