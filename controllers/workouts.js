@@ -31,8 +31,10 @@ workoutsRouter.post('/', middleware.userExtractor, async (request, response) => 
     response.status(201).json(savedWorkout)
 })
 
-workoutsRouter.get('/:id', async (request, response) => {
-    const workouts = await Workout.find({ user: request.params.id })
+workoutsRouter.get('/:username', async (request, response) => {
+    const userWithUsername = await User.find({ username: request.params.username })
+    const id = userWithUsername[0]._id
+    const workouts = await Workout.find({ user: id })
         .sort({ workoutTime: -1 })
         .limit(10)
         .populate('user')

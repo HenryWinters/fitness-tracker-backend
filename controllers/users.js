@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt')
+const user = require('../models/user')
 const usersRouter = require('express').Router()
 const User = require('../models/user')
+const middleware = require('../utils/middleware')
 
 usersRouter.post('/', async (request, response) => {
     const { username, name, password, city, bio, color, registerDate } = request.body
@@ -57,9 +59,23 @@ usersRouter.get('/', async (request, reponse) => {
     reponse.json(users)
 })
 
-usersRouter.get('/:id', async (request, response) => {
-    const user = await User.find({ _id: request.params.id })
+usersRouter.get('/:username', async (request, response) => {
+    const user = await User.find({ username: request.params.username })
     response.json(user)
+})
+
+usersRouter.patch('/follow/:id', middleware.userExtractor, async (request, response) => {
+    const body = request.body 
+    const user = request.user
+
+    const userToFollow = await User.findById(body.id)
+    userToFollow.followers = userToFollow.followers.concat(user.id)
+    await userToFollow.save()
+    
+    user.following = user.following.concat(request.params.id)
+    const updatedUser = await user.save()
+
+    response.status(200).json(updatedUser)
 })
 
 module.exports = usersRouter

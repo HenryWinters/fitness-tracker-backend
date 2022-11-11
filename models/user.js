@@ -26,6 +26,12 @@ const userSchema = new mongoose.Schema({
             ref: 'Workout'
         }
     ], 
+    likes: [
+        {
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Workout'
+        }
+    ],
     workoutCount: Number, 
     exerciseCount: Number,
     setCount: Number, 
