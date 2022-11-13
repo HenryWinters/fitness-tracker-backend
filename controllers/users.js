@@ -70,6 +70,28 @@ usersRouter.get('/:username/following', async (request, response) => {
     response.json(userFollowing)
 })
 
+usersRouter.get('/:username/followers', async (request, response) => {
+    const user = await User.find({ username: request.params.username })
+    const usersFollowers = user[0].followers
+    response.json(usersFollowers)
+})
+
+usersRouter.get('/:username/following/names', async (request, response) => {
+    const user = await User.find({ username: request.params.username })
+        .populate('following')
+    const userFollowing = user[0].following
+    const userFollowingNamesAndUsernames = userFollowing.map(user => { return { name: user['name'], username: user['username'] }})
+    response.json(userFollowingNamesAndUsernames)
+})
+
+usersRouter.get('/:username/followers/names', async (request, response) => {
+    const user = await User.find({ username: request.params.username })
+        .populate('followers')
+    const userFollowers = user[0].followers
+    const userFollowersNamesAndUsernames = userFollowers.map(user => { return { name: user['name'], username: user['username'] }})
+    response.json(userFollowersNamesAndUsernames)
+})
+
 usersRouter.patch('/follow/:id', middleware.userExtractor, async (request, response) => {
     const body = request.body 
     const user = request.user
