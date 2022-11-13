@@ -64,6 +64,12 @@ usersRouter.get('/:username', async (request, response) => {
     response.json(user)
 })
 
+usersRouter.get('/:username/following', async (request, response) => {
+    const user = await User.find({ username: request.params.username })
+    const userFollowing = user[0].following
+    response.json(userFollowing)
+})
+
 usersRouter.patch('/follow/:id', middleware.userExtractor, async (request, response) => {
     const body = request.body 
     const user = request.user
