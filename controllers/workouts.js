@@ -36,7 +36,16 @@ workoutsRouter.get('/:username', async (request, response) => {
     const id = userWithUsername[0]._id
     const workouts = await Workout.find({ user: id })
         .sort({ workoutTime: -1 })
-        .limit(10)
+        .populate('user')
+    response.json(workouts)
+})
+
+workoutsRouter.get('/:username/all', async (request, response) => {
+    const userWithUsername = await User.find({ username: request.params.username })
+    const followingIdArr = userWithUsername[0].following
+    const followingAndUserIdArr = followingIdArr.concat(userWithUsername[0].id)
+    const workouts = await Workout.find({user: {$in: followingAndUserIdArr }})
+        .sort({ workoutTime: -1 })
         .populate('user')
     response.json(workouts)
 })
