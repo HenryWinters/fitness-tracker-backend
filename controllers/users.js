@@ -76,19 +76,33 @@ usersRouter.get('/:username/followers', async (request, response) => {
     response.json(usersFollowers)
 })
 
-usersRouter.get('/:username/following/names', async (request, response) => {
+usersRouter.get('/:username/following/info', async (request, response) => {
     const user = await User.find({ username: request.params.username })
         .populate('following')
     const userFollowing = user[0].following
-    const userFollowingNamesAndUsernames = userFollowing.map(user => { return { name: user['name'], username: user['username'] }})
+    const userFollowingNamesAndUsernames = userFollowing.map(user => { 
+        return { 
+            id: user['id'],
+            name: user['name'], 
+            username: user['username'],
+            city: user['city']
+        }
+    })
     response.json(userFollowingNamesAndUsernames)
 })
 
-usersRouter.get('/:username/followers/names', async (request, response) => {
+usersRouter.get('/:username/followers/info', async (request, response) => {
     const user = await User.find({ username: request.params.username })
         .populate('followers')
     const userFollowers = user[0].followers
-    const userFollowersNamesAndUsernames = userFollowers.map(user => { return { name: user['name'], username: user['username'] }})
+    const userFollowersNamesAndUsernames = userFollowers.map(user => { 
+        return { 
+            id: user['id'],
+            name: user['name'], 
+            username: user['username'],
+            city: user['city']
+        }
+    })
     response.json(userFollowersNamesAndUsernames)
 })
 
