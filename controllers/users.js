@@ -65,15 +65,23 @@ usersRouter.get('/:username', async (request, response) => {
 })
 
 usersRouter.get('/:username/following', async (request, response) => {
-    const user = await User.find({ username: request.params.username })
+    const user = await User.find({ username: request.params.username }).select({ following: 1 })
     const userFollowing = user[0].following
     response.json(userFollowing)
 })
 
+usersRouter.get('/:username/following/likes', async (request, response) => {
+    const user = await User.find({ username: request.params.username }).select({ following: 1, likes: 1 })
+    const userFollowing = user[0].following
+    const userLikes = user[0].likes
+    response.json({ following: userFollowing, likes: userLikes })
+})
+
 usersRouter.get('/:username/followers', async (request, response) => {
-    const user = await User.find({ username: request.params.username })
+    const user = await User.find({ username: request.params.username }).select({ followers: 1, likes: 1 })
     const usersFollowers = user[0].followers
-    response.json(usersFollowers)
+    const usersLikes = user[0].likes
+    response.json({ followers: usersFollowers, likes: usersLikes })
 })
 
 usersRouter.get('/:username/following/info', async (request, response) => {
@@ -106,6 +114,8 @@ usersRouter.get('/:username/followers/info', async (request, response) => {
     response.json(userFollowersNamesAndUsernames)
 })
 
+usersRouter.get('/')
+
 usersRouter.patch('/follow/:id', middleware.userExtractor, async (request, response) => {
     const body = request.body 
     const user = request.user
@@ -130,6 +140,8 @@ usersRouter.patch('/unfollow/:id', middleware.userExtractor, async (request, res
 
     response.status(200).json(updatedUser)
 })
+
+
 
 module.exports = usersRouter
 

@@ -73,5 +73,25 @@ workoutsRouter.delete('/:id', middleware.userExtractor, async (request, response
     }
 })
 
+workoutsRouter.patch('/like/:id', middleware.userExtractor, async (request, response) => {
+    const idToLike = request.body.id
+    const user = request.user
+
+    const workoutToUpdate = await Workout.findById(idToLike) 
+
+    if (workoutToUpdate.likes.includes(user.id)) {
+        return response.status(409).json({
+            error: 'User has already liked post'
+        })
+    } 
+    
+    workoutToUpdate.likes = workoutToUpdate.likes.concat(user.id)
+    workoutToUpdate.likeCount += 1
+    await workoutToUpdate.save() 
+    const updatedUser = await User.findByIdAndUpdate(user.id, { $push: { likes: idToLike }})
+
+    response.status(200).json(workoutToUpdate)
+})
+
 
 module.exports = workoutsRouter
