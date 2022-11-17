@@ -40,6 +40,13 @@ workoutsRouter.get('/:username', async (request, response) => {
     response.json(workouts)
 })
 
+workoutsRouter.get('/:id/likes', async (request, response) => {
+    const workoutLikes = await Workout.findById(request.params.id)
+        .select({ likes: 1 })
+        .populate('likes')
+    response.json(workoutLikes)
+})
+
 workoutsRouter.get('/:username/feed', async (request, response) => {
     const userWithUsername = await User.find({ username: request.params.username })
     const followingIdArr = userWithUsername[0].following
@@ -86,11 +93,23 @@ workoutsRouter.patch('/like/:id', middleware.userExtractor, async (request, resp
     } 
     
     workoutToUpdate.likes = workoutToUpdate.likes.concat(user.id)
-    workoutToUpdate.likeCount += 1
+    workoutToUpdate.likeCount = workoutToUpdate.likeCount + 1
     await workoutToUpdate.save() 
     const updatedUser = await User.findByIdAndUpdate(user.id, { $push: { likes: idToLike }})
 
     response.status(200).json(workoutToUpdate)
+})
+
+workoutsRouter.patch('/unlike/:id', middleware.userExtractor, async (request, response) => {
+    const idToUnlike = request.body.id
+    const user = request.user
+    
+    const updatedLikes = await Workout.findByIdAndUpdate(idToUnlike, { $pull: { likes: user.id }})
+    const updatedLikeCount = await Workout.findByIdAndUpdate(idToUnlike, { $inc: { likeCount: -1 }})
+
+    const updatedUser = await User.findByIdAndUpdate(user.id, { $pull: { likes: idToUnlike }})
+
+    response.status(200).json(updatedLikeCount)
 })
 
 
