@@ -70,13 +70,6 @@ usersRouter.get('/:username/following', async (request, response) => {
     response.json(userFollowing)
 })
 
-usersRouter.get('/:username/following/likes', async (request, response) => {
-    const user = await User.find({ username: request.params.username }).select({ following: 1, likes: 1 })
-    const userFollowing = user[0].following
-    const userLikes = user[0].likes
-    response.json({ following: userFollowing, likes: userLikes })
-})
-
 usersRouter.get('/:username/followers', async (request, response) => {
     const user = await User.find({ username: request.params.username }).select({ followers: 1, likes: 1 })
     const usersFollowers = user[0].followers

@@ -40,6 +40,12 @@ workoutsRouter.get('/:username', async (request, response) => {
     response.json(workouts)
 })
 
+workoutsRouter.get('/workout/:id', async (request, response) => {
+    const workout = await Workout.findById(request.params.id)
+        .populate('user')
+    response.json(workout)
+})
+
 workoutsRouter.get('/:id/likes', async (request, response) => {
     const workoutLikes = await Workout.findById(request.params.id)
         .select({ likes: 1 })
@@ -96,7 +102,7 @@ workoutsRouter.patch('/like/:id', middleware.userExtractor, async (request, resp
     workoutToUpdate.likeCount = workoutToUpdate.likeCount + 1
     await workoutToUpdate.save() 
     const updatedUser = await User.findByIdAndUpdate(user.id, { $push: { likes: idToLike }})
-
+        
     response.status(200).json(workoutToUpdate)
 })
 
@@ -105,11 +111,11 @@ workoutsRouter.patch('/unlike/:id', middleware.userExtractor, async (request, re
     const user = request.user
     
     const updatedLikes = await Workout.findByIdAndUpdate(idToUnlike, { $pull: { likes: user.id }})
-    const updatedLikeCount = await Workout.findByIdAndUpdate(idToUnlike, { $inc: { likeCount: -1 }})
-
+    const updatedWorkout = await Workout.findByIdAndUpdate(idToUnlike, { $inc: { likeCount: -1 }})
+        
     const updatedUser = await User.findByIdAndUpdate(user.id, { $pull: { likes: idToUnlike }})
 
-    response.status(200).json(updatedLikeCount)
+    response.status(200).json(updatedWorkout)
 })
 
 
