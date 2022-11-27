@@ -134,6 +134,15 @@ usersRouter.patch('/unfollow/:id', middleware.userExtractor, async (request, res
     response.status(200).json(updatedUser)
 })
 
+usersRouter.patch('/edit/:id', middleware.userExtractor, async (request, response) => {
+    const body = request.body 
+    const user = request.user 
+
+    const updatedUser = await User.findByIdAndUpdate(user.id, body)
+
+    response.status(200).json(updatedUser)
+})
+
 
 
 module.exports = usersRouter
